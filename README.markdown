@@ -1,5 +1,12 @@
 Provide a command line to clear APC cache from the console.
 
+The problem with APC is that it's impossible to clear it from command line.
+Because even if you enable APC for PHP CLI, it's a different instance than,
+say, your Apache PHP or PHP-CGI APC instance.
+
+The trick here is to create a file in the web dir, execute it through HTTP,
+then remove it.
+
 ## Installation
 
 ### Add ApcBundle to your src/Bundle dir
@@ -22,19 +29,19 @@ Provide a command line to clear APC cache from the console.
 
     # app/config/config.yml
     apc.config:
-        url: http://example.com/
+        host: http://example.com
         web_dir: %kernel.root_dir%/../web
 
 ### Use
 
 Clear All APC cache (opcode+user):
 
-    php app/console apc:clear --all
+    php app/console apc:clear
 
-Clear opcode cache:
+Clear only opcode cache:
 
     php app/console apc:clear --opcode
 
-Clear user cache:
+Clear only user cache:
 
     php app/console apc:clear --user

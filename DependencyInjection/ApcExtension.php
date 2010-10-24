@@ -12,7 +12,7 @@ class ApcExtension extends Extension
     public function configLoad($config, ContainerBuilder $container)
     {
         if(isset($config['host'])) {
-            $container->setParameter('apc.host', trim($config['host'], '/').'/');
+            $container->setParameter('apc.host', trim($config['host'], '/'));
         }
         else {
             throw new \InvalidArgumentException('You must provide the host (e.g. http/example.com)');

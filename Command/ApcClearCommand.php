@@ -19,8 +19,8 @@ class ApcClearCommand extends BaseCommand
     {
         $this
             ->setDefinition(array())
-            ->addOption('opcode', null, InputOption::PARAMETER_NONE, 'Clear only opcode cache')
-            ->addOption('user', null, InputOption::PARAMETER_NONE, 'Clear only user cache')
+            ->addOption('opcode', null, InputOption::VALUE_NONE, 'Clear only opcode cache')
+            ->addOption('user', null, InputOption::VALUE_NONE, 'Clear only user cache')
             ->setName('apc:clear')
         ;
     }

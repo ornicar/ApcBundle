@@ -8,8 +8,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApcExtension extends Extension
 {
+    public function configLoad(array $configs, ContainerBuilder $container)
+    {
+        foreach ($configs as $config) {
+            $this->doConfigLoad($config, $container);
+        }
+    }
 
-    public function configLoad($config, ContainerBuilder $container)
+    public function doConfigLoad(array $config, ContainerBuilder $container)
     {
         if(isset($config['host'])) {
             $container->setParameter('apc.host', trim($config['host'], '/'));

@@ -28,7 +28,7 @@ then remove it.
 ### Configure
 
     # app/config/config.yml
-    apc.config:
+    apc:
         host: http://example.com
         web_dir: %kernel.root_dir%/../web
 

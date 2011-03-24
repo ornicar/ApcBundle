@@ -15,6 +15,9 @@ class ApcExtension extends Extension
         $configuration = new Configuration();
         $config = $processor->process($configuration->getConfigTree(), $configs);
 
+        if (strncmp($config['host'], 'http', 4) !== 0) {
+            $config['host'] = 'http://'.$config['host'];
+        }
         $container->setParameter('apc.host', trim($config['host'], '/'));
         $container->setParameter('apc.web_dir', $config['web_dir']);
     }

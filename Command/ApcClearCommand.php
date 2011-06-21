@@ -2,7 +2,7 @@
 
 namespace Bundle\ApcBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\Command as BaseCommand;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Loads initial data
  */
-class ApcClearCommand extends BaseCommand
+class ApcClearCommand extends ContainerAwareCommand
 {
     /**
      * @see Command
@@ -33,7 +33,7 @@ class ApcClearCommand extends BaseCommand
         $clearOpcode = $input->getOption('opcode') || !$input->getOption('user');
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
 
-        $webDir = $this->container->getParameter('apc.web_dir');
+        $webDir = $this->getContainer()->getParameter('apc.web_dir');
         if(!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
         }
@@ -52,7 +52,7 @@ class ApcClearCommand extends BaseCommand
 
         file_put_contents($file, $code);
 
-        $url = $this->container->getParameter('apc.host').'/'.$filename;
+        $url = $this->getContainer()->getParameter('apc.host').'/'.$filename;
         $result = file_get_contents($url);
         $result = json_decode($result, true);
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Bundle\ApcBundle;
+namespace Ornicar\ApcBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle as BaseBundle;
 
-class ApcBundle extends BaseBundle
+class OrnicarApcBundle extends BaseBundle
 {
 }

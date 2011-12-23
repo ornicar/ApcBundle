@@ -7,41 +7,51 @@ say, your Apache PHP or PHP-CGI APC instance.
 The trick here is to create a file in the web dir, execute it through HTTP,
 then remove it.
 
-## Installation
+Installation
+============
 
-### Add ApcBundle to your src/Bundle dir
+  1. Add this bundle to your project as a Git submodule:
 
-    git submodule add git://github.com/ornicar/ApcBundle.git src/Bundle/ApcBundle
+          $ git submodule add git://github.com/ornicar/ApcBundle.git vendor/Bundles/Ornicar/ApcBundle
 
-### Add ApcBundle to your application kernel
+  2. Add `Ornicar` namespace to your autoloader:
 
-    // app/AppKernel.php
-    public function registerBundles()
-    {
-        return array(
-            // ...
-            new Bundle\ApcBundle\ApcBundle(),
-            // ...
-        );
-    }
+          // app/autoload.php
+          $loader->registerNamespaces(array(
+             'Ornicar' => __DIR__.'/../vendor/bundles',
+             // your other namespaces
+          );
 
-### Configure
+  3. Add this bundle to your application kernel:
 
-    # app/config/config.yml
-    apc:
-        host: http://example.com
-        web_dir: %kernel.root_dir%/../web
+          // app/AppKernel.php
+          public function registerBundles()
+          {
+              return array(
+                  // ...
+                  new Ornicar\ApcBundle\OrnicarApcBundle(),
+                  // ...
+              );
+          }
 
-### Use
+  4. Configure `ornicar_apc` service:
 
-Clear All APC cache (opcode+user):
+          # app/config/config.yml
+          ornicar_apc:
+              host: http://example.com
+              web_dir: %kernel.root_dir%/../web
 
-    php app/console apc:clear
+Usage
+=====
+
+Clear all APC cache (opcode+user):
+
+          $ php app/console apc:clear
 
 Clear only opcode cache:
 
-    php app/console apc:clear --opcode
+          $ php app/console apc:clear --opcode
 
 Clear only user cache:
 
-    php app/console apc:clear --user
+          $ php app/console apc:clear --user

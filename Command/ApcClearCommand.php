@@ -1,6 +1,6 @@
 <?php
 
-namespace Bundle\ApcBundle\Command;
+namespace Ornicar\ApcBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,7 +33,7 @@ class ApcClearCommand extends ContainerAwareCommand
         $clearOpcode = $input->getOption('opcode') || !$input->getOption('user');
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
 
-        $webDir = $this->getContainer()->getParameter('apc.web_dir');
+        $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
         if (!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
         }
@@ -54,7 +54,7 @@ class ApcClearCommand extends ContainerAwareCommand
             throw new \RuntimeException(sprintf('Unable to write "%s"', $file));
         }
 
-        $url = $this->getContainer()->getParameter('apc.host').'/'.$filename;
+        $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
         $result = file_get_contents($url);
         $result = json_decode($result, true);
 

@@ -34,10 +34,10 @@ class ApcClearCommand extends ContainerAwareCommand
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
 
         $webDir = $this->getContainer()->getParameter('apc.web_dir');
-        if(!is_dir($webDir)) {
+        if (!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
         }
-        if(!is_writable($webDir)) {
+        if (!is_writable($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir is not writable "%s"', $webDir));
         }
         $filename = md5(uniqid().mt_rand(0, 9999999).php_uname()).'.php';
@@ -50,7 +50,9 @@ class ApcClearCommand extends ContainerAwareCommand
             '%opcode%' => var_export($clearOpcode, true)
         ));
 
-        file_put_contents($file, $code);
+        if (false === @file_put_contents($file, $code)) {
+            throw new \RuntimeException(sprintf('Unable to write "%s"', $file));
+        }
 
         $url = $this->getContainer()->getParameter('apc.host').'/'.$filename;
         $result = file_get_contents($url);
@@ -61,7 +63,7 @@ class ApcClearCommand extends ContainerAwareCommand
         if(!empty($result['success'])) {
             $output->writeLn($result['message']);
         } else {
-            throw new \RuntimeException('Failed.');
+            throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
         }
     }
 }

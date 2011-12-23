@@ -1,13 +1,12 @@
 <?php
 
-namespace Bundle\ApcBundle\DependencyInjection;
+namespace Ornicar\ApcBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ApcExtension extends Extension
+class OrnicarApcExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -18,7 +17,7 @@ class ApcExtension extends Extension
         if (strncmp($config['host'], 'http', 4) !== 0) {
             $config['host'] = 'http://'.$config['host'];
         }
-        $container->setParameter('apc.host', trim($config['host'], '/'));
-        $container->setParameter('apc.web_dir', $config['web_dir']);
+        $container->setParameter('ornicar_apc.host', trim($config['host'], '/'));
+        $container->setParameter('ornicar_apc.web_dir', $config['web_dir']);
     }
 }

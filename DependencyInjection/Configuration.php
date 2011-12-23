@@ -1,8 +1,7 @@
 <?php
 
-namespace Bundle\ApcBundle\DependencyInjection;
+namespace Ornicar\ApcBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
@@ -21,7 +20,7 @@ class Configuration
     public function getConfigTree()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('apc', 'array')
+        $treeBuilder->root('ornicar_apc', 'array')
             ->isRequired()
             ->children()
                 ->scalarNode('host')->isRequired()->end()

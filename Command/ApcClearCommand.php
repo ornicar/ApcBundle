@@ -72,12 +72,14 @@ class ApcClearCommand extends ContainerAwareCommand
 
         // Clear cache
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
-        $headers = get_headers($url);
 
-        if (false === $headers) {
+        try {
+            $headers = get_headers($url, true);
+        } catch(\ErrorException $e) {
             unlink($file);
+
             throw new \RuntimeException(
-                sprintf('Unable to read "%s". Does the host resolve locally?', $url)
+                sprintf('Unable to read "%s". Is ornicar_apc.host proper url?', $url)
             );
         }
 

@@ -30,6 +30,7 @@ class ApcClearCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Find out type of clean up
         $clearOpcode = $input->getOption('opcode') || !$input->getOption('user');
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
 
@@ -44,15 +45,20 @@ class ApcClearCommand extends ContainerAwareCommand
         $output->writeLn(sprintf('Clearing <info>%s</info> APC cache', $clearType));
 
         $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
+
         if (!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
         }
+
         if (!is_writable($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir is not writable "%s"', $webDir));
         }
+
+        // Generate random file name
         $filename = md5(uniqid().mt_rand(0, 9999999).php_uname()).'.php';
         $file = $webDir.'/'.$filename;
 
+        // Write to new file from template
         $templateFile = __DIR__.'/../Resources/template.tpl';
         $template = file_get_contents($templateFile);
         $code = strtr($template, array(
@@ -64,6 +70,7 @@ class ApcClearCommand extends ContainerAwareCommand
             throw new \RuntimeException(sprintf('Unable to write "%s"', $file));
         }
 
+        // Clear cache
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
         $headers = get_headers($url);
 

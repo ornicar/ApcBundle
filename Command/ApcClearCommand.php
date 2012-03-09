@@ -65,15 +65,23 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
-        $result = file_get_contents($url);
-        $result = json_decode($result, true);
+        $headers = get_headers($url);
+
+        if (false === $headers) {
+            unlink($file);
+            throw new \RuntimeException(
+                sprintf('Unable to read "%s". Does the host resolve locally?', $url)
+            );
+        }
+
+        // Check if everything went ok
+        $responseCode = explode(' ', $headers[0]);
+        $responseCode = $responseCode[1];
+
+        if ($responseCode !== '200') {
+            $output->writeLn('APC cache could not be cleared.');
+        }
 
         unlink($file);
-
-        if(!empty($result['success'])) {
-            $output->writeLn($result['message']);
-        } else {
-            throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
-        }
     }
 }

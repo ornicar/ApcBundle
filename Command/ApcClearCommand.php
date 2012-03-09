@@ -47,11 +47,11 @@ class ApcClearCommand extends ContainerAwareCommand
         $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
 
         if (!is_dir($webDir)) {
-            throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
+            throw new \RuntimeException(sprintf('Web dir does not exist "%s"', $webDir));
         }
 
         if (!is_writable($webDir)) {
-            throw new \InvalidArgumentException(sprintf('Web dir is not writable "%s"', $webDir));
+            throw new \RuntimeException(sprintf('Web dir is not writable "%s"', $webDir));
         }
 
         // Generate random file name

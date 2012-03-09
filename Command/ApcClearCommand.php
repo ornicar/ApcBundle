@@ -33,6 +33,16 @@ class ApcClearCommand extends ContainerAwareCommand
         $clearOpcode = $input->getOption('opcode') || !$input->getOption('user');
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
 
+        if ($clearOpcode && !$clearUser) {
+            $clearType = 'opcode';
+        } else if (!$clearOpcode && $clearUser) {
+            $clearType = 'user';
+        } else if ($clearOpcode && $clearUser) {
+            $clearType = 'the entire';
+        }
+
+        $output->writeLn(sprintf('Clearing <info>%s</info> APC cache', $clearType));
+
         $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
         if (!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));

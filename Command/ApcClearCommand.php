@@ -89,9 +89,13 @@ class ApcClearCommand extends ContainerAwareCommand
 
         if (array_key_exists('S2-APC-Cleanup', $headers)) {
             if ($responseCode !== '200') {
+                unlink($file);
+
                 throw new \RuntimeException('APC cache could not be cleared.');
             }
         } else {
+            unlink($file);
+
             throw new \RuntimeException(
                 sprintf('Unable to read "%s". Does the host resolve locally?', $url)
             );

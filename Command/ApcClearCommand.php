@@ -87,8 +87,14 @@ class ApcClearCommand extends ContainerAwareCommand
         $responseCode = explode(' ', $headers[0]);
         $responseCode = $responseCode[1];
 
-        if ($responseCode !== '200') {
-            $output->writeLn('APC cache could not be cleared.');
+        if (array_key_exists('S2-APC-Cleanup', $headers)) {
+            if ($responseCode !== '200') {
+                throw new \RuntimeException('APC cache could not be cleared.');
+            }
+        } else {
+            throw new \RuntimeException(
+                sprintf('Unable to read "%s". Does the host resolve locally?', $url)
+            );
         }
 
         unlink($file);

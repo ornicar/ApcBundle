@@ -17,3 +17,5 @@ if (count(array_unique($results)) === 1) {
 } else {
     header($protocol.' 500 Internal Server Error');
 }
+
+header('S2-APC-Cleanup: 1');

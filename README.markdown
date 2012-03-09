@@ -7,6 +7,13 @@ say, your Apache PHP or PHP-CGI APC instance.
 The trick here is to create a file in the web dir, execute it through HTTP,
 then remove it.
 
+Prerequisite
+============
+
+If you want to clear Apache part of APC, you will need to enable `allow_url_fopen` in `php.ini` to allow opening of URL object-like files.
+
+
+
 Installation
 ============
 

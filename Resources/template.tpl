@@ -1,21 +1,27 @@
 <?php
 
-$results = array();
+$customHeader = 'HTTP_'.str_replace(" ", "_", strtoupper(str_replace("-", " ", %customHeader%)));
 
-if (%user%) {
-    $results[] = apc_clear_cache('user');
+var_dump($_SERVER, $customHeader);
+
+if ($_SERVER[$customHeader]) {
+    $results = array();
+
+    if (%user%) {
+        $results[] = apc_clear_cache('user');
+    }
+
+    if (%opcode%) {
+        $results[] = apc_clear_cache('opcode');
+    }
+
+    $protocol = $_SERVER['SERVER_PROTOCOL'];
+
+    if (count(array_unique($results)) === 1) {
+        header($protocol.' 200 OK');
+    } else {
+        header($protocol.' 500 Internal Server Error');
+    }
+
+    header('S2-APC-Cleanup: 1');
 }
-
-if (%opcode%) {
-    $results[] = apc_clear_cache('opcode');
-}
-
-$protocol = $_SERVER['SERVER_PROTOCOL'];
-
-if (count(array_unique($results)) === 1) {
-    header($protocol.' 200 OK');
-} else {
-    header($protocol.' 500 Internal Server Error');
-}
-
-header('S2-APC-Cleanup: 1');

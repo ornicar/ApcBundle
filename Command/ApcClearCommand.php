@@ -58,10 +58,14 @@ class ApcClearCommand extends ContainerAwareCommand
         $filename = md5(uniqid().mt_rand(0, 9999999).php_uname()).'.php';
         $file = $webDir.'/'.$filename;
 
+        // Generate header name for security purposes
+        $customHeader = uniqid('S2-APC-Cleanup-');
+
         // Write to new file from template
         $templateFile = __DIR__.'/../Resources/template.tpl';
         $template = file_get_contents($templateFile);
         $code = strtr($template, array(
+            '%customHeader%' => var_export($customHeader, true),
             '%user%' => var_export($clearUser, true),
             '%opcode%' => var_export($clearOpcode, true)
         ));
@@ -74,20 +78,27 @@ class ApcClearCommand extends ContainerAwareCommand
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
 
         try {
-            $headers = get_headers($url, true);
+            $opts = array(
+                'http' => array(
+                    'header' => "$customHeader: 1\r\n",
+                )
+            );
+
+            $context = stream_context_create($opts);
+            file_get_contents($url, false, $context);
         } catch(\ErrorException $e) {
             unlink($file);
 
             throw new \RuntimeException(
-                sprintf('Unable to read "%s". Is ornicar_apc.host proper url?', $url)
+                sprintf('Unable to read "%s". Is value in ornicar_apc.host proper url?', $url)
             );
         }
 
         // Check if everything went ok
-        $responseCode = explode(' ', $headers[0]);
+        $responseCode = explode(' ', $http_response_header[0]);
         $responseCode = $responseCode[1];
 
-        if (array_key_exists('S2-APC-Cleanup', $headers)) {
+        if (in_array('S2-APC-Cleanup: 1', $http_response_header)) {
             if ($responseCode !== '200') {
                 unlink($file);
 
@@ -101,6 +112,7 @@ class ApcClearCommand extends ContainerAwareCommand
             );
         }
 
+        // Go out with trash
         unlink($file);
     }
 }

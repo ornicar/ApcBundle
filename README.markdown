@@ -19,46 +19,46 @@ Installation
 
   1. Add this bundle to your project as a Git submodule:
 
-          $ git submodule add git://github.com/ornicar/ApcBundle.git vendor/Bundles/Ornicar/ApcBundle
+        $ git submodule add git://github.com/ornicar/ApcBundle.git vendor/Bundles/Ornicar/ApcBundle
 
   2. Add `Ornicar` namespace to your autoloader:
 
-          // app/autoload.php
-          $loader->registerNamespaces(array(
-             'Ornicar' => __DIR__.'/../vendor/bundles',
-             // your other namespaces
-          );
+        // app/autoload.php
+        $loader->registerNamespaces(array(
+           'Ornicar' => __DIR__.'/../vendor/bundles',
+           // your other namespaces
+        );
 
   3. Add this bundle to your application kernel:
 
-          // app/AppKernel.php
-          public function registerBundles()
-          {
-              return array(
-                  // ...
-                  new Ornicar\ApcBundle\OrnicarApcBundle(),
-                  // ...
-              );
-          }
+        // app/AppKernel.php
+        public function registerBundles()
+        {
+            return array(
+                // ...
+                new Ornicar\ApcBundle\OrnicarApcBundle(),
+                // ...
+            );
+        }
 
   4. Configure `ornicar_apc` service:
 
-          # app/config/config.yml
-          ornicar_apc:
-              host: http://example.com
-              web_dir: %kernel.root_dir%/../web
+        # app/config/config.yml
+        ornicar_apc:
+            host: http://example.com
+            web_dir: %kernel.root_dir%/../web
 
 Usage
 =====
 
 Clear all APC cache (opcode+user):
 
-          $ php app/console apc:clear
+    $ php app/console apc:clear
 
 Clear only opcode cache:
 
-          $ php app/console apc:clear --opcode
+    $ php app/console apc:clear --opcode
 
 Clear only user cache:
 
-          $ php app/console apc:clear --user
+    $ php app/console apc:clear --user

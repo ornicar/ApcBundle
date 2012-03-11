@@ -17,7 +17,9 @@ if ($_SERVER[$customHeader]) {
 
     $protocol = $_SERVER['SERVER_PROTOCOL'];
 
-    if (count(array_unique($results)) === 1) {
+    $uniqueResults = array_unique($results);
+
+    if (count($uniqueResults) === 1 && $uniqueResults[0] === true) {
         header($protocol.' 200 OK');
     } else {
         header($protocol.' 500 Internal Server Error');

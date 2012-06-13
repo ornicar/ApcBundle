@@ -55,15 +55,41 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
-        $result = file_get_contents($url);
-        $result = json_decode($result, true);
 
+        if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
+            $result = file_get_contents($url);
+
+            if (!$result) {
+                unlink($file);
+                throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
+            }
+        }
+        else {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, array(
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FAILONERROR => true
+            ));
+
+            $result = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                $error = curl_error($ch);
+                curl_close($ch);
+                unlink($file);
+                throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
+            }
+            curl_close($ch);
+        }
+
+        $result = json_decode($result, true);
         unlink($file);
 
-        if(!empty($result['success'])) {
+        if($result['success']) {
             $output->writeLn($result['message']);
         } else {
-            throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
+            throw new \RuntimeException($result['message']);
         }
     }
 }

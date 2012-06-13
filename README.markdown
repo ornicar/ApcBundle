@@ -10,7 +10,8 @@ then remove it.
 Prerequisite
 ============
 
-If you want to clear Apache part of APC, you will need to enable `allow_url_fopen` in `php.ini` to allow opening of URL object-like files.
+If you want to clear Apache part of APC, you will need to enable `allow_url_fopen` in `php.ini` to allow opening of URL
+object-like files, or set the curl option.
 
 
 
@@ -47,6 +48,14 @@ Installation
           ornicar_apc:
               host: http://example.com
               web_dir: %kernel.root_dir%/../web
+
+  5. If you want to use curl rather than fopen set the following option:
+
+          # app/config/config.yml
+          ornicar_apc:
+              ...
+              mode: curl
+
 
 Usage
 =====

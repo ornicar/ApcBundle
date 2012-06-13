@@ -1,6 +1,25 @@
 <?php
+$message = 'Clear APC';
+$success = true;
 
-if(%user%)   apc_clear_cache('user');
-if(%opcode%) apc_clear_cache('opcode');
+if(%user%) {
+    if (apc_clear_cache('user')) {
+        $message .= ' User Cache: success';
+    }
+    else {
+        $success = false;
+        $message .= ' User Cache: failure';
+    }
+}
 
-die(json_encode(array('success' => true, 'message' => sprintf('Clear APC user:%user%, opcode:%opcode%'))));
+if(%opcode%) {
+    if (apc_clear_cache('opcode')) {
+        $message .= ' Opcode Cache: success';
+    }
+    else {
+        $success = false;
+        $message .= ' Opcode Cache: failure';
+    }
+}
+
+die(json_encode(array('success' => $success, 'message' => $message)));

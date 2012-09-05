@@ -18,11 +18,15 @@ object-like files, or set the curl option.
 Installation
 ============
 
-  1. Add this bundle to your project as a Git submodule:
+  1. If you're using Composer, require this package and skip to step 4:
+
+          $ composer.phar require ornicar/apc-bundle
+
+  2. Otherwise, add this bundle to your project as a Git submodule:
 
           $ git submodule add git://github.com/ornicar/ApcBundle.git vendor/Bundles/Ornicar/ApcBundle
 
-  2. Add `Ornicar` namespace to your autoloader:
+  3. Add `Ornicar` namespace to your autoloader:
 
           // app/autoload.php
           $loader->registerNamespaces(array(
@@ -30,7 +34,7 @@ Installation
              // your other namespaces
           );
 
-  3. Add this bundle to your application kernel:
+  4. Add this bundle to your application kernel:
 
           // app/AppKernel.php
           public function registerBundles()
@@ -42,19 +46,36 @@ Installation
               );
           }
 
-  4. Configure `ornicar_apc` service:
+  5. Configure `ornicar_apc` service:
 
           # app/config/config.yml
           ornicar_apc:
               host: http://example.com
               web_dir: %kernel.root_dir%/../web
 
-  5. If you want to use curl rather than fopen set the following option:
+  6. If you want to use curl rather than fopen set the following option:
 
           # app/config/config.yml
           ornicar_apc:
               ...
               mode: curl
+
+  7. If you're using Composer and want to clear the APC cache automatically after installing or updating, then add `"Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApc"` twice to the `scripts` section of your composer.json:
+
+          "scripts": {
+              "post-install-cmd": [
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+                  "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApc"
+              ],
+              "post-update-cmd": [
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+                  "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+                  "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApc"
+              ]
+          },
 
 
 Usage

@@ -1,4 +1,9 @@
 <?php
+
+if (!extension_loaded('apc')) {
+    die(json_encode(array('success' => false, 'message' => 'APC module has not been loaded/installed')));
+}
+
 $message = 'Clear APC';
 $success = true;
 

@@ -56,15 +56,7 @@ class ApcClearCommand extends ContainerAwareCommand
 
         $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
 
-        if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
-            $result = file_get_contents($url);
-
-            if (!$result) {
-                unlink($file);
-                throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
-            }
-        }
-        else {
+        if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'curl') {
             $ch = curl_init($url);
             curl_setopt_array($ch, array(
                 CURLOPT_HEADER => false,
@@ -81,6 +73,34 @@ class ApcClearCommand extends ContainerAwareCommand
                 throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
             }
             curl_close($ch);
+        }
+        else {
+            $host = str_replace(array('http://', 'https://'), '', $url);
+            if (($pos = strpos($host, '/')) && $pos > 0) {
+                $host = substr($host, 0, $pos);
+            }
+            $scriptUrl = str_replace(array("http://$host", "https://$host"), '', $url);
+
+            $fp = fsockopen($host, 80, $errno, $errstr);
+            if (!$fp) {
+                unlink($file);
+                throw new \RuntimeException("[$errno] $errstr");
+            }
+            $request =
+                "GET $scriptUrl HTTP/1.1\r\n" .
+                "Host: $host\r\n" .
+                "Connection: Close\r\n\r\n";
+            fwrite($fp, $request);
+            $header = true;
+            $result = '';
+            while (!feof($fp)) {
+                $result .= fgets($fp);
+                if ($header === true && strpos($result, "\r\n\r\n") > 0) {
+                    $header = false;
+                    $result = '';
+                }
+            }
+            fclose($fp);
         }
 
         $result = json_decode($result, true);

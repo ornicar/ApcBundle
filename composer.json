@@ -18,6 +18,11 @@
     "require": {
         "symfony/framework-bundle": ">=2.0,<2.3-dev"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
     "autoload": {
         "psr-0": {
             "Ornicar\\ApcBundle": ""

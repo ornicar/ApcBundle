@@ -18,19 +18,20 @@ object-like files, or set the curl option.
 Installation
 ============
 
-  1. Add this bundle to your project as a Git submodule:
+  1. Add it to your composer:
 
-          $ git submodule add git://github.com/ornicar/ApcBundle.git vendor/Bundles/Ornicar/ApcBundle
+      ```json
+          "ornicar/apc-bundle": "dev-master"
+      ```
 
-  2. Add `Ornicar` namespace to your autoloader:
+     or:
 
-          // app/autoload.php
-          $loader->registerNamespaces(array(
-             'Ornicar' => __DIR__.'/../vendor/bundles',
-             // your other namespaces
-          );
+      ```sh
+          composer require ornicar/apc-bundle
+          composer update ornicar/apc-bundle
+      ```
 
-  3. Add this bundle to your application kernel:
+  2. Add this bundle to your application kernel:
 
           // app/AppKernel.php
           public function registerBundles()
@@ -42,14 +43,14 @@ Installation
               );
           }
 
-  4. Configure `ornicar_apc` service:
+  3. Configure `ornicar_apc` service:
 
           # app/config/config.yml
           ornicar_apc:
               host: http://example.com
               web_dir: %kernel.root_dir%/../web
 
-  5. If you want to use curl rather than fopen set the following option:
+  4. If you want to use curl rather than fopen set the following option:
 
           # app/config/config.yml
           ornicar_apc:

@@ -18,10 +18,14 @@ object-like files, or set the curl option.
 Installation
 ============
 
-  1. Add it to your composer:
+  1. Add it to your composer.json:
 
       ```json
-          "ornicar/apc-bundle": "dev-master"
+      {
+          require: {
+              "ornicar/apc-bundle": "dev-master"
+          }
+      }
       ```
 
      or:

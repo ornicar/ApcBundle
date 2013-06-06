@@ -22,7 +22,7 @@ Installation
 
       ```json
       {
-          require: {
+          "require": {
               "ornicar/apc-bundle": "dev-master"
           }
       }

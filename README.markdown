@@ -76,3 +76,27 @@ Clear only opcode cache:
 Clear only user cache:
 
           $ php app/console apc:clear --user
+
+
+Capifony usage
+==============
+
+To automatically clear apc cache after each capifony deploy you can define a custom task
+
+```ruby
+namespace :symfony do
+  desc "Clear apc cache"
+  task :clear_apc do
+    capifony_pretty_print "--> Clear apc cache"
+    run "#{try_sudo} sh -c 'cd #{latest_release} && #{php_bin} #{symfony_console} apc:clear --env=#{symfony_env_prod}'"
+    capifony_puts_ok
+  end
+end
+```
+
+and add this hook
+
+```ruby
+# apc
+after "deploy", "symfony:clear_apc"
+```

@@ -59,12 +59,10 @@ class ApcClearCommand extends ContainerAwareCommand
         if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
             $result = false;
             for ($i = 0; $i<5; $i++){
-                try {
-                    $result = file_get_contents($url);
+                if ($result = file_get_contents($url)){
                     break;
-                } catch (\RuntimeException $e){
+                } else {
                     sleep(1);
-                    continue;
                 }
             }
 

@@ -23,7 +23,7 @@ class Configuration
         $treeBuilder->root('ornicar_apc', 'array')
             ->isRequired()
             ->children()
-                ->scalarNode('host')->isRequired()->end()
+                ->scalarNode('host')->defaultFalse()->end()
                 ->scalarNode('web_dir')->isRequired()->end()
                 ->scalarNode('mode')->defaultValue('fopen')->end()
             ->end()

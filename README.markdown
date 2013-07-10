@@ -100,3 +100,18 @@ and add this hook
 # apc
 after "deploy", "symfony:clear_apc"
 ```
+
+Nginx configuration
+===================
+
+If you are using nginx and limiting PHP scripts that you are passing to fpm you need to allow 'apc' prefixed php files. Otherwise your web server will return the requested PHP file as text and the system won't be able to clear the apc cache.
+
+Example configuration:
+```
+# Your virtual host
+server {
+  ...
+  location ~ ^/(app|app_dev|apc-[a-fA-F\d]{32})\.php(/|$) { # This will allow apc (apc-{MD5HASH}.php) files to be processed by fpm
+    fastcgi_pass                127.0.0.1:9000;
+    ...
+``` 

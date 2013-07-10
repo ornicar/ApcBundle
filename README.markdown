@@ -111,7 +111,7 @@ Example configuration:
 # Your virtual host
 server {
   ...
-  location ~ ^/(app|app_dev|apc-[a-fA-F\d]{32})\.php(/|$) { # This will allow apc (apc-{MD5HASH}.php) files to be processed by fpm
+  location ~ ^/(app|app_dev|apc-.*)\.php(/|$) { { # This will allow apc (apc-{MD5HASH}.php) files to be processed by fpm
     fastcgi_pass                127.0.0.1:9000;
     ...
 ``` 

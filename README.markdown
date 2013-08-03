@@ -77,6 +77,16 @@ Clear only user cache:
 
           $ php app/console apc:clear --user
 
+Testing
+=====
+
+Install development libraries:
+
+          $ composer update --dev --prefer-dist
+
+Run test suite from project root directory:
+
+          $ ./vendor/bin/phpunit -c phpunit.xml.dist
 
 Capifony usage
 ==============

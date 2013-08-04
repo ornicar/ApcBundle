@@ -40,7 +40,7 @@ class ApcClearCommand extends ContainerAwareCommand
         if (!is_writable($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir is not writable "%s"', $webDir));
         }
-        $filename = md5(uniqid().mt_rand(0, 9999999).php_uname()).'.php';
+        $filename = 'apc-'.md5(uniqid().mt_rand(0, 9999999).php_uname()).'.php';
         $file = $webDir.'/'.$filename;
 
         $templateFile = __DIR__.'/../Resources/template.tpl';
@@ -54,7 +54,11 @@ class ApcClearCommand extends ContainerAwareCommand
             throw new \RuntimeException(sprintf('Unable to write "%s"', $file));
         }
 
-        $url = $this->getContainer()->getParameter('ornicar_apc.host').'/'.$filename;
+        if (!$host = $this->getContainer()->getParameter('ornicar_apc.host')) {
+            $host = sprintf("%s://%s", $this->getContainer()->getParameter('router.request_context.scheme'), $this->getContainer()->getParameter('router.request_context.host'));
+        }
+
+        $url = $host.'/'.$filename;
 
         if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
             try {

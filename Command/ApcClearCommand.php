@@ -61,14 +61,16 @@ class ApcClearCommand extends ContainerAwareCommand
         $url = $host.'/'.$filename;
 
         if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
-            try {
-                $result = file_get_contents($url);
-
-                if (!$result) {
-                    unlink($file);
-                    throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
+            $result = false;
+            for ($i = 0; $i<5; $i++){
+                if ($result = file_get_contents($url)){
+                    break;
+                } else {
+                    sleep(1);
                 }
-            } catch (\ErrorException $e) {
+            }
+
+            if (!$result) {
                 unlink($file);
                 throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
             }
@@ -96,7 +98,7 @@ class ApcClearCommand extends ContainerAwareCommand
         unlink($file);
 
         if($result['success']) {
-            $output->writeLn($result['message']);
+            $output->writeLn($result['message']. ". Reset attempts: ".(empty($i) ? 1 : $i+1));
         } else {
             throw new \RuntimeException($result['message']);
         }

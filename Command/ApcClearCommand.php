@@ -92,7 +92,7 @@ class ApcClearCommand extends ContainerAwareCommand
         unlink($file);
 
         if($result['success']) {
-            $output->writeLn($result['message']);
+            $output->writeln($result['message']);
         } else {
             throw new \RuntimeException($result['message']);
         }

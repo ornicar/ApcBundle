@@ -158,8 +158,18 @@ class ApcClearCommand extends ContainerAwareCommand
      */
     protected function setUpOptions(InputInterface $input)
     {
-        $this->clearOpCodeCacheOnly = $input->getOption('opcode') || !$input->getOption('user');
-        $this->clearUserCacheOnly = $input->getOption('user') || !$input->getOption('opcode');
+        $php55x = version_compare(PHP_VERSION, '5.5.0', '>=');
+
+        $this->clearOpCodeCacheOnly = ($input->getOption('opcode') xor $input->getOption('user'));
+        $this->clearUserCacheOnly = ($input->getOption('user') xor $input->getOption('opcode'));
+        $this->clearAll = ! $this->clearOpCodeCacheOnly && ! $this->clearUserCacheOnly;
+
+        if ($php55x && ($this->clearOpCodeCacheOnly || $this->clearAll)) {
+            throw new \RuntimeException('APC is not supported for PHP 5.5 and above.');
+        }
+        if ($php55x && !extension_loaded('apcu') && ($this->clearOpCodeCacheOnly || $this->clearAll)) {
+            throw new \RuntimeException('APCu extension has not been loaded and PHP version is 5.5 and above.');
+        }
 
         $this->setUpHost($input);
         $this->setUpMode($input);

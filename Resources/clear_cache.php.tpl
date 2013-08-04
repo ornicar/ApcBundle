@@ -1,22 +1,21 @@
 <?php
+
 $message = 'Clear APC';
 $success = true;
 
-if(%user%) {
+if (%clear_user_cache%) {
     if (apc_clear_cache('user')) {
         $message .= ' User Cache: success';
-    }
-    else {
+    } else {
         $success = false;
         $message .= ' User Cache: failure';
     }
 }
 
-if(%opcode%) {
+if (%clear_opcode_cache%) {
     if (apc_clear_cache('opcode')) {
         $message .= ' Opcode Cache: success';
-    }
-    else {
+    } else {
         $success = false;
         $message .= ' Opcode Cache: failure';
     }

@@ -21,6 +21,7 @@ class ApcClearCommand extends ContainerAwareCommand
             ->setDefinition(array())
             ->addOption('opcode', null, InputOption::VALUE_NONE, 'Clear only opcode cache')
             ->addOption('user', null, InputOption::VALUE_NONE, 'Clear only user cache')
+            ->addOption('cli', null, InputOption::VALUE_NONE, 'Only clear the cache via the CLI')
             ->setName('apc:clear')
         ;
     }
@@ -32,6 +33,19 @@ class ApcClearCommand extends ContainerAwareCommand
     {
         $clearOpcode = $input->getOption('opcode') || !$input->getOption('user');
         $clearUser = $input->getOption('user') || !$input->getOption('opcode');
+        $cli = $input->getOption('cli');
+
+        if ($cli) {
+            $result = $this->clearCliCache($clearUser, $clearOpcode);
+
+            if($result['success']) {
+                $output->writeln('Cli: '.$result['message']);
+            } else {
+                throw new \RuntimeException($result['message']);
+            }
+
+            return;
+        }
 
         $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
         if (!is_dir($webDir)) {
@@ -96,9 +110,39 @@ class ApcClearCommand extends ContainerAwareCommand
         unlink($file);
 
         if($result['success']) {
-            $output->writeln($result['message']);
+            $output->writeln('Web: '.$result['message']);
         } else {
             throw new \RuntimeException($result['message']);
         }
+    }
+
+    protected function clearCliCache($clearUser, $clearOpcode)
+    {
+        $success = true;
+        $message = '';
+
+        if (function_exists('apc_clear_cache')) {
+            if($clearUser) {
+                if (apc_clear_cache('user')) {
+                    $message .= ' User Cache: success';
+                }
+                else {
+                    $success = false;
+                    $message .= ' User Cache: failure';
+                }
+            }
+
+            if($clearOpcode) {
+                if (apc_clear_cache('opcode')) {
+                    $message .= ' Opcode Cache: success';
+                }
+                else {
+                    $success = false;
+                    $message .= ' Opcode Cache: failure';
+                }
+            }
+        }
+
+        return array('success' => $success, 'message' => $message);
     }
 }

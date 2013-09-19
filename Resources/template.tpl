@@ -7,7 +7,7 @@ if(%user%) {
         $message .= ' User Cache: success';
     }
     elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('user')) {
-        $message .= ' Opcode Cache: success';
+        $message .= ' User Cache: success';
     }
     else {
         $success = false;

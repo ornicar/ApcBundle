@@ -3,7 +3,10 @@ $message = 'Clear APC';
 $success = true;
 
 if(%user%) {
-    if (apc_clear_cache('user')) {
+    if (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '>=') && apc_clear_cache()) {
+        $message .= ' User Cache: success';
+    }
+    elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('user')) {
         $message .= ' User Cache: success';
     }
     else {
@@ -13,7 +16,10 @@ if(%user%) {
 }
 
 if(%opcode%) {
-    if (apc_clear_cache('opcode')) {
+    if (function_exists('opcache_reset') && opcache_reset()) {
+        $message .= ' Opcode Cache: success';
+    }
+    elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('opcode')) {
         $message .= ' Opcode Cache: success';
     }
     else {

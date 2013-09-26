@@ -77,6 +77,10 @@ Clear only user cache:
 
           $ php app/console apc:clear --user
 
+Clear the CLI cache (opcode+user):
+
+          $ php app/console apc:clear --cli
+
 
 Capifony usage
 ==============

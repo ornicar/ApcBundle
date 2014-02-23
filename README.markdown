@@ -98,7 +98,7 @@ namespace :symfony do
 end
 ```
 
-and add this hooks
+and add these hooks
 
 ```ruby
 # apc

@@ -22,6 +22,7 @@ class ApcClearCommand extends ContainerAwareCommand
             ->addOption('opcode', null, InputOption::VALUE_NONE, 'Clear only opcode cache')
             ->addOption('user', null, InputOption::VALUE_NONE, 'Clear only user cache')
             ->addOption('cli', null, InputOption::VALUE_NONE, 'Only clear the cache via the CLI')
+            ->addOption('auth', null, InputOption::VALUE_REQUIRED, 'HTTP authentication as username:password')
             ->setName('apc:clear')
         ;
     }
@@ -73,11 +74,19 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $url = $host.'/'.$filename;
+        $auth = $input->getOption('auth');
 
         if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
+            $context = null;
+            if (false === is_null($auth)) {
+                $context = stream_context_create(array('http' => array(
+                    'header' => 'Authorization: Basic ' . base64_encode($auth),
+                )));
+            }
+
             $result = false;
             for ($i = 0; $i<5; $i++){
-                if ($result = @file_get_contents($url)){
+                if ($result = @file_get_contents($url, false, $context)) {
                     break;
                 } else {
                     sleep(1);
@@ -96,6 +105,10 @@ class ApcClearCommand extends ContainerAwareCommand
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_FAILONERROR => true
             ));
+
+            if (false === is_null($auth)) {
+                curl_setopt($ch, CURLOPT_USERPWD, $auth);
+            }
 
             $result = curl_exec($ch);
 

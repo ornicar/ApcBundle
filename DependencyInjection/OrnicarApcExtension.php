@@ -19,6 +19,7 @@ class OrnicarApcExtension extends Extension
         }
         $container->setParameter('ornicar_apc.host', $config['host'] ? trim($config['host'], '/') : false);
         $container->setParameter('ornicar_apc.web_dir', $config['web_dir']);
-        $container->setParameter('ornicar_apc.mode', $config['mode']);
+        $container->setParameter('ornicar_apc.basic_auth_username', $config['basic_auth_username']);
+        $container->setParameter('ornicar_apc.basic_auth_password', $config['basic_auth_password']);
     }
 }

@@ -25,7 +25,8 @@ class Configuration
             ->children()
                 ->scalarNode('host')->defaultFalse()->end()
                 ->scalarNode('web_dir')->isRequired()->end()
-                ->scalarNode('mode')->defaultValue('curl')->end()
+                ->scalarNode('basic_auth_username')->defaultFalse()->end()
+                ->scalarNode('basic_auth_password')->defaultFalse()->end()
             ->end()
         ->end();
 

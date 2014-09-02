@@ -1,5 +1,5 @@
 {
-    "name": "ornicar/apc-bundle",
+    "name": "icedevelopment/apc-bundle",
     "type":        "symfony-bundle",
     "description": "Provides a command line task to clear APC cache from the console",
     "keywords":    ["apc", "task"],

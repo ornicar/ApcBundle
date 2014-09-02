@@ -25,7 +25,7 @@ class Configuration
             ->children()
                 ->scalarNode('host')->defaultFalse()->end()
                 ->scalarNode('web_dir')->isRequired()->end()
-                ->scalarNode('mode')->defaultValue('fopen')->end()
+                ->scalarNode('mode')->defaultValue('curl')->end()
             ->end()
         ->end();
 

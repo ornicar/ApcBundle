@@ -74,52 +74,36 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $url = $host.'/'.$filename;
-        $auth = $input->getOption('auth');
 
-        if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
-            $context = null;
-            if (false === is_null($auth)) {
-                $context = stream_context_create(array('http' => array(
-                    'header' => 'Authorization: Basic ' . base64_encode($auth),
-                )));
-            }
+        $ch = curl_init();
+        $urlParameters = parse_url($this->getContainer()->getParameter('ornicar_apc.host'));
+        $headerHost = $urlParameters['host'];
+        $curlParameters = array(
+            CURLOPT_HEADER => true,
+            CURLOPT_URL => 'http://127.0.0.1/' . $filename,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FAILONERROR => true,
+            CURLOPT_HTTPHEADER => array('Host: ' . $headerHost),
+        );
 
-            $result = false;
-            for ($i = 0; $i<5; $i++){
-                if ($result = @file_get_contents($url, false, $context)) {
-                    break;
-                } else {
-                    sleep(1);
-                }
-            }
-
-            if (!$result) {
-                unlink($file);
-                throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
-            }
+        // If a username and a password have been specified use them
+        if ($this->getContainer()->hasParameter('ornicar_apc.basic_auth_username')
+            && $this->getContainer()->hasParameter('ornicar_apc.basic_auth_password')
+        ) {
+            $curlParameters[CURLOPT_USERPWD] = $this->getContainer()->getParameter('ornicar_apc.basic_auth_username') . ':' . $this->getContainer()->getParameter('ornicar_apc.basic_auth_password');
         }
-        else {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, array(
-                CURLOPT_HEADER => false,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FAILONERROR => true
-            ));
 
-            if (false === is_null($auth)) {
-                curl_setopt($ch, CURLOPT_USERPWD, $auth);
-            }
+        curl_setopt_array($ch, $curlParameters);
 
-            $result = curl_exec($ch);
+        $result = curl_exec($ch);
 
-            if (curl_errno($ch)) {
-                $error = curl_error($ch);
-                curl_close($ch);
-                unlink($file);
-                throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
-            }
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
             curl_close($ch);
+            unlink($file);
+            throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
         }
+        curl_close($ch);
 
         $result = json_decode($result, true);
         unlink($file);

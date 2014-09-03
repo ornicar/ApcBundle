@@ -79,7 +79,7 @@ class ApcClearCommand extends ContainerAwareCommand
         $urlParameters = parse_url($this->getContainer()->getParameter('ornicar_apc.host'));
         $headerHost = $urlParameters['host'];
         $curlParameters = array(
-            CURLOPT_HEADER => true,
+            CURLOPT_HEADER => false,
             CURLOPT_URL => 'http://127.0.0.1/' . $filename,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FAILONERROR => true,

@@ -97,8 +97,7 @@ class ApcClearCommand extends ContainerAwareCommand
                 unlink($file);
                 throw new \RuntimeException(sprintf('Unable to read "%s", does the host locally resolve?', $url));
             }
-        }
-        else {
+        } else {
             $ch = curl_init($url);
             curl_setopt_array($ch, array(
                 CURLOPT_HEADER => false,
@@ -110,18 +109,25 @@ class ApcClearCommand extends ContainerAwareCommand
                 curl_setopt($ch, CURLOPT_USERPWD, $auth);
             }
 
-            $result = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                $error = curl_error($ch);
-                curl_close($ch);
-                unlink($file);
-                throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
+            for ($i = 0; $i<5; $i++){
+                $result = curl_exec($ch);
+                if (curl_errno($ch)) {
+                    $success = false;
+                    $error = curl_error($ch);
+                    $output->writeln(sprintf('Error attempting clear #%s with message %s', $i, $error));
+                    sleep(1);
+                    continue;
+                } else {
+                    $success = true;
+                    $result = json_decode($result, true);
+                    break;
+                }
             }
-            curl_close($ch);
         }
-
-        $result = json_decode($result, true);
+        curl_close($ch);
+        if (!$success) {
+            throw new \RuntimeException(sprintf('Curl error reading "%s": %s', $url, $error));
+        }
         unlink($file);
 
         if($result['success']) {

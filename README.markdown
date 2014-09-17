@@ -23,7 +23,7 @@ Installation
       ```json
       {
           "require": {
-              "ornicar/apc-bundle": "1.0.*"
+              "ornicar/apc-bundle": "~1.0.2"
           }
       }
       ```

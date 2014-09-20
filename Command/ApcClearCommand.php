@@ -109,13 +109,13 @@ class ApcClearCommand extends ContainerAwareCommand
                 curl_setopt($ch, CURLOPT_USERPWD, $auth);
             }
 
-            for ($i = 0; $i<5; $i++){
+            for ($i = 1; $i<6; $i++){
                 $result = curl_exec($ch);
                 if (curl_errno($ch)) {
                     $success = false;
                     $error = curl_error($ch);
                     $output->writeln(sprintf('Error attempting clear #%s with message %s', $i, $error));
-                    sleep(1);
+                    sleep($i);
                     continue;
                 } else {
                     $success = true;
@@ -131,7 +131,7 @@ class ApcClearCommand extends ContainerAwareCommand
         unlink($file);
 
         if($result['success']) {
-            $output->writeln('Web: '.$result['message'].". Reset attempts: ".(empty($i) ? 1 : $i+1).".");
+            $output->writeln('Web: '.$result['message'].". Reset attempts: ".(empty($i) ? 1 : $i).".");
         } else {
             throw new \RuntimeException($result['message']);
         }

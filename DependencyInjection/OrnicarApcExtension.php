@@ -10,9 +10,8 @@ class OrnicarApcExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $processor = new Processor();
         $configuration = new Configuration();
-        $config = $processor->process($configuration->getConfigTree(), $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         if ($config['host'] && strncmp($config['host'], 'http', 4) !== 0) {
             $config['host'] = 'http://'.$config['host'];

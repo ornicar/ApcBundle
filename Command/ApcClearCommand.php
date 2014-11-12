@@ -89,6 +89,8 @@ class ApcClearCommand extends ContainerAwareCommand
         // If a username and a password have been specified use them
         if ($this->getContainer()->hasParameter('ornicar_apc.basic_auth_username')
             && $this->getContainer()->hasParameter('ornicar_apc.basic_auth_password')
+            && $this->getContainer()->getParameter('ornicar_apc.basic_auth_username') != null
+            && $this->getContainer()->getParameter('ornicar_apc.basic_auth_password') != null
         ) {
             $curlParameters[CURLOPT_USERPWD] = $this->getContainer()->getParameter('ornicar_apc.basic_auth_username') . ':' . $this->getContainer()->getParameter('ornicar_apc.basic_auth_password');
         }

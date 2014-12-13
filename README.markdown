@@ -82,6 +82,61 @@ Clear the CLI cache (opcode+user):
           $ php app/console apc:clear --cli
 
 
+Composer usage
+==============
+
+To automatically clear apc cache after each composer install / composer update, you can add a script handler to your project's composer.json :
+
+```json
+        "post-install-cmd": [
+          ...
+          "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
+        }
+        "post-update-cmd": [
+          ...
+          "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
+        }
+```
+
+You can specify command arguments in the `extra` section:
+
+- `--opcode` (to clean only opcode cache): 
+
+```json
+        "extra": [
+          ...
+          "ornicar-apc-opcode": "yes"
+        }
+```
+
+- `--user` (to clean only user cache): 
+
+```json
+        "extra": [
+          ...
+          "ornicar-apc-user": "yes"
+        }
+```
+
+- `--cli` (to only clear cache via the CLI): 
+
+```json
+        "extra": [
+          ...
+          "ornicar-apc-cli": "yes"
+        }
+```
+
+- `--auth` (HTTP authentification): 
+
+```json
+        "extra": [
+          ...
+          "ornicar-apc-auth": "username:password"
+        }
+```
+
+
 Capifony usage
 ==============
 

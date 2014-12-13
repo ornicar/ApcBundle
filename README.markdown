@@ -89,11 +89,11 @@ To automatically clear apc cache after each composer install / composer update, 
 
 ```json
         "post-install-cmd": [
-          ...
+          
           "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
         ],
         "post-update-cmd": [
-          ...
+          
           "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
         ]
 ```

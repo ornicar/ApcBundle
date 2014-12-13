@@ -103,7 +103,7 @@ You can specify command arguments in the `extra` section:
 - `--opcode` (to clean only opcode cache): 
 
 ```json
-        "extra": [
+        "extra": {
           ...
           "ornicar-apc-opcode": "yes"
         }
@@ -112,7 +112,7 @@ You can specify command arguments in the `extra` section:
 - `--user` (to clean only user cache): 
 
 ```json
-        "extra": [
+        "extra": {
           ...
           "ornicar-apc-user": "yes"
         }
@@ -121,7 +121,7 @@ You can specify command arguments in the `extra` section:
 - `--cli` (to only clear cache via the CLI): 
 
 ```json
-        "extra": [
+        "extra": {
           ...
           "ornicar-apc-cli": "yes"
         }
@@ -130,7 +130,7 @@ You can specify command arguments in the `extra` section:
 - `--auth` (HTTP authentification): 
 
 ```json
-        "extra": [
+        "extra": {
           ...
           "ornicar-apc-auth": "username:password"
         }

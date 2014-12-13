@@ -89,11 +89,9 @@ To automatically clear apc cache after each composer install / composer update, 
 
 ```json
         "post-install-cmd": [
-          
           "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
         ],
         "post-update-cmd": [
-          
           "Ornicar\\ApcBundle\\Composer\\ScriptHandler::clearApcCache"
         ]
 ```
@@ -104,7 +102,6 @@ You can specify command arguments in the `extra` section:
 
 ```json
         "extra": {
-
           "ornicar-apc-opcode": "yes"
         }
 ```
@@ -113,7 +110,6 @@ You can specify command arguments in the `extra` section:
 
 ```json
         "extra": {
-
           "ornicar-apc-user": "yes"
         }
 ```
@@ -122,7 +118,6 @@ You can specify command arguments in the `extra` section:
 
 ```json
         "extra": {
-        
           "ornicar-apc-cli": "yes"
         }
 ```
@@ -131,7 +126,6 @@ You can specify command arguments in the `extra` section:
 
 ```json
         "extra": {
-
           "ornicar-apc-auth": "username:password"
         }
 ```

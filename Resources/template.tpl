@@ -9,6 +9,9 @@ if(%user%) {
     elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('user')) {
         $message .= ' User Cache: success';
     }
+    elseif (function_exists('wincache_ucache_clear') && wincache_ucache_clear()) {
+        $message .= ' User Cache: success';
+    }
     else {
         $success = false;
         $message .= ' User Cache: failure';

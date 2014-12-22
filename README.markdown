@@ -92,7 +92,7 @@ namespace :symfony do
   desc "Clear apc cache"
   task :clear_apc do
     capifony_pretty_print "--> Clear apc cache"
-    run "#{try_sudo} sh -c 'cd #{current_path} && #{php_bin} #{symfony_console} apc:clear --env=#{symfony_env_prod}'"
+    run "#{try_sudo} sh -c 'cd #{latest_release} && #{php_bin} #{symfony_console} apc:clear #{console_options}'"
     capifony_puts_ok
   end
 end

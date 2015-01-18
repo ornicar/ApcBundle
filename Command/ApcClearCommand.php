@@ -127,7 +127,7 @@ class ApcClearCommand extends ContainerAwareCommand
         if($result['success']) {
             $output->writeln('Web: '.$result['message'].". Reset attempts: ".(empty($i) ? 1 : $i+1).".");
         } else {
-            throw new \RuntimeException($result['message']);
+            $output->writeln('APC Cache clear status: failure.');
         }
     }
 

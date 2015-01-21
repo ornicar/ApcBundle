@@ -1,3 +1,5 @@
+# NOT MAINTAINED - please fork
+
 Provide a command line to clear APC cache from the console.
 
 The problem with APC is that it's impossible to clear it from command line.

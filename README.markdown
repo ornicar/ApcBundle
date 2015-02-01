@@ -1,4 +1,6 @@
-# NOT MAINTAINED - Use https://github.com/Smart-Core/AcceleratorCacheBundle instead
+# NOT MAINTAINED
+
+### Use https://github.com/Smart-Core/AcceleratorCacheBundle instead
 
 Provide a command line to clear APC cache from the console.
 

@@ -19,5 +19,11 @@ class OrnicarApcExtension extends Extension
         $container->setParameter('ornicar_apc.host', $config['host'] ? trim($config['host'], '/') : false);
         $container->setParameter('ornicar_apc.web_dir', $config['web_dir']);
         $container->setParameter('ornicar_apc.mode', $config['mode']);
+
+        $curlOpts = array();
+        foreach ($config['curl_opts'] as $name => $value) {
+            $curlOpts[constant($name)] = $value;
+        }
+        $container->setParameter('ornicar_apc.curl_opts', $curlOpts);
     }
 }

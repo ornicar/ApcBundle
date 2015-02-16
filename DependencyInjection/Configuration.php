@@ -26,6 +26,19 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('host')->defaultFalse()->end()
                 ->scalarNode('web_dir')->isRequired()->end()
                 ->scalarNode('mode')->defaultValue('fopen')->end()
+                ->arrayNode('curl_opts')
+                    ->validate()
+                        ->always(function ($opts) {
+                            foreach (array_keys($opts) as $const)
+                                if (! defined($const) || substr($const, 0, 8) !== 'CURLOPT_')
+                                    throw new \InvalidArgumentException(sprintf("%s is not a valid CURLOPT option. (http://php.net/manual/en/function.curl-setopt.php)", json_encode($const)));
+                            return $opts;
+                        })
+                    ->end()
+                    ->defaultValue(array())
+                    ->useAttributeAsKey('name', false)
+                    ->prototype('scalar')->end()
+                ->end()
             ->end()
         ->end();
 

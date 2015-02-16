@@ -48,7 +48,9 @@ class ApcClearCommand extends ContainerAwareCommand
             return;
         }
 
-        $webDir = $this->getContainer()->getParameter('ornicar_apc.web_dir');
+        $container = $this->getContainer();
+
+        $webDir = $container->getParameter('ornicar_apc.web_dir');
         if (!is_dir($webDir)) {
             throw new \InvalidArgumentException(sprintf('Web dir does not exist "%s"', $webDir));
         }
@@ -69,14 +71,14 @@ class ApcClearCommand extends ContainerAwareCommand
             throw new \RuntimeException(sprintf('Unable to write "%s"', $file));
         }
 
-        if (!$host = $this->getContainer()->getParameter('ornicar_apc.host')) {
-            $host = sprintf("%s://%s", $this->getContainer()->getParameter('router.request_context.scheme'), $this->getContainer()->getParameter('router.request_context.host'));
+        if (!$host = $container->getParameter('ornicar_apc.host')) {
+            $host = sprintf("%s://%s", $container->getParameter('router.request_context.scheme'), $container->getParameter('router.request_context.host'));
         }
 
         $url = $host.'/'.$filename;
         $auth = $input->getOption('auth');
 
-        if ($this->getContainer()->getParameter('ornicar_apc.mode') == 'fopen') {
+        if ($container->getParameter('ornicar_apc.mode') == 'fopen') {
             $context = null;
             if (false === is_null($auth)) {
                 $context = stream_context_create(array('http' => array(
@@ -99,12 +101,14 @@ class ApcClearCommand extends ContainerAwareCommand
             }
         }
         else {
+            $curlOpts = $container->getParameter('ornicar_apc.curl_opts');
+
             $ch = curl_init($url);
-            curl_setopt_array($ch, array(
+            curl_setopt_array($ch, array_replace($curlOpts, array(
                 CURLOPT_HEADER => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_FAILONERROR => true
-            ));
+            )));
 
             if (false === is_null($auth)) {
                 curl_setopt($ch, CURLOPT_USERPWD, $auth);

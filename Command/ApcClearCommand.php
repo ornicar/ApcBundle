@@ -73,17 +73,20 @@ class ApcClearCommand extends ContainerAwareCommand
             $host = sprintf("%s://%s", $this->getContainer()->getParameter('router.request_context.scheme'), $this->getContainer()->getParameter('router.request_context.host'));
         }
 
-        $url = $host.'/'.$filename;
+        $parsedUrl = parse_url($host);
+        $scheme = $parsedUrl['scheme'];
+        $hostname = $parsedUrl['host'];
+        $localhost = '127.0.0.1';
+        $url = sprintf('%s://%s/%s', $scheme, $localhost, $filename);
 
         $ch = curl_init();
-        $urlParameters = parse_url($this->getContainer()->getParameter('ornicar_apc.host'));
-        $headerHost = $urlParameters['host'];
         $curlParameters = array(
             CURLOPT_HEADER => false,
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FAILONERROR => true,
-            CURLOPT_HTTPHEADER => array('Host: ' . $headerHost),
+            CURLOPT_HTTPHEADER => array('Host: ' . $hostname),
+            CURLOPT_SSL_VERIFYHOST => 0,
         );
 
         // If a username and a password have been specified use them

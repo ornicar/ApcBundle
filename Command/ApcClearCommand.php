@@ -80,7 +80,7 @@ class ApcClearCommand extends ContainerAwareCommand
         $headerHost = $urlParameters['host'];
         $curlParameters = array(
             CURLOPT_HEADER => false,
-            CURLOPT_URL => 'http://127.0.0.1/' . $filename,
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FAILONERROR => true,
             CURLOPT_HTTPHEADER => array('Host: ' . $headerHost),

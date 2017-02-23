@@ -77,7 +77,12 @@ class ApcClearCommand extends ContainerAwareCommand
         $scheme = $parsedUrl['scheme'];
         $hostname = $parsedUrl['host'];
         $localhost = '127.0.0.1';
-        $url = sprintf('%s://%s/%s', $scheme, $localhost, $filename);
+        
+        if (array_key_exists('port', $parsedUrl)) {
+            $url = sprintf('%s://%s:%s/%s', $scheme, $localhost, $parsedUrl['port'], $filename);
+        } else {
+            $url = sprintf('%s://%s/%s', $scheme, $localhost, $filename);
+        }
 
         $ch = curl_init();
         $curlParameters = array(

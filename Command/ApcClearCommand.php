@@ -74,13 +74,12 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $parsedUrl = parse_url($host);
-        $scheme = $this->getContainer()->getParameter('router.request_context.scheme');
-        $hostname = $this->getContainer()->getParameter('router.request_context.host');
+        $hostname = $parsedUrl['host'];
 
         if (array_key_exists('port', $parsedUrl)) {
-            $url = sprintf('%s://%s:%s/%s', $scheme, $hostname, $parsedUrl['port'], $filename);
+            $url = sprintf('%s:%s/%s', $host, $parsedUrl['port'], $filename);
         } else {
-            $url = sprintf('%s://%s/%s', $scheme, $hostname, $filename);
+            $url = sprintf('%s/%s', $host, $filename);
         }
 
         $ch = curl_init();

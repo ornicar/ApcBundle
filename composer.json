@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": ">=2.1,<3.0"
+        "symfony/symfony": "^3.0 || ^4.0"
     },
     "extra": {
         "branch-alias": {

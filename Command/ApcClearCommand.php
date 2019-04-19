@@ -117,7 +117,7 @@ class ApcClearCommand extends ContainerAwareCommand
         unlink($file);
 
         if($result['success']) {
-            $output->writeln('Web: '.$result['message'].". Reset attempts: ".(empty($i) ? 1 : $i+1).".");
+            $output->writeln('Web: '.$result['message']." Reset attempts: ".(empty($i) ? 1 : $i+1).".");
         } else {
             throw new \RuntimeException($result['message']);
         }
@@ -130,25 +130,40 @@ class ApcClearCommand extends ContainerAwareCommand
 
         if (function_exists('apc_clear_cache')) {
             if ($clearUser) {
-                if (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '>=') && apc_clear_cache()) {
-                    $message .= ' User Cache: success';
-                } elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('user')) {
-                    $message .= ' User Cache: success';
+                if (function_exists('wincache_ucache_clear') && wincache_ucache_clear()) {
+                    $message .= 'Wincache User Cache: success.';
+                } elseif (function_exists('apcu_clear_cache') && apcu_clear_cache()) {
+                    $message .= 'APC User Cache: success.';
+                } elseif (function_exists('apc_clear_cache') && function_exists('opcache_reset') && apc_clear_cache()) {
+                    $message .= 'APC User Cache: success.';
+                } elseif (function_exists('apc_clear_cache') && apc_clear_cache('user')) {
+                    $message .= 'APC User Cache: success.';
+                } elseif (function_exists('xcache_clear_cache')) {
+                    $cnt = xcache_count(XC_TYPE_VAR);
+                    for ($i=0; $i < $cnt; $i++) {
+                        xcache_clear_cache(XC_TYPE_VAR, $i);
+                    }
+                    $message .= 'XCache User Cache: success.';
                 } else {
                     $success = false;
-                    $message .= ' User Cache: failure';
+                    $message .= 'User Cache: failure.';
                 }
             }
 
             if ($clearOpcode) {
                 if (function_exists('opcache_reset') && opcache_reset()) {
-                    $message .= ' Opcode Cache: success';
-                } elseif (function_exists('apc_clear_cache') && version_compare(PHP_VERSION, '5.5.0', '<') && apc_clear_cache('opcode')) {
-                    $message .= ' Opcode Cache: success';
-                }
-                else {
+                    $message .= ' Zend OPcache: success.';
+                } elseif (function_exists('apc_clear_cache') && apc_clear_cache('opcode')) {
+                    $message .= ' APC Opcode Cache: success.';
+                } elseif (function_exists('xcache_clear_cache')) {
+                    $cnt = xcache_count(XC_TYPE_PHP);
+                    for ($i=0; $i < $cnt; $i++) {
+                        xcache_clear_cache(XC_TYPE_PHP, $i);
+                    }
+                    $message .= ' XCache Opcode Cache: success.';
+                } else {
                     $success = false;
-                    $message .= ' Opcode Cache: failure';
+                    $message .= ' Opcode Cache: failure.';
                 }
             }
         }

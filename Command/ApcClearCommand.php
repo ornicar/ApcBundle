@@ -77,9 +77,9 @@ class ApcClearCommand extends ContainerAwareCommand
         $hostname = $parsedUrl['host'];
 
         if (array_key_exists('port', $parsedUrl)) {
-            $url = sprintf('%s:%s/%s', $host, $parsedUrl['port'], $filename);
+            $url = sprintf('%s:%s/%s', $hostname, $parsedUrl['port'], $filename);
         } else {
-            $url = sprintf('%s/%s', $host, $filename);
+            $url = sprintf('%s/%s', $hostname, $filename);
         }
 
         $ch = curl_init();

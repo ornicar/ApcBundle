@@ -74,12 +74,15 @@ class ApcClearCommand extends ContainerAwareCommand
         }
 
         $parsedUrl = parse_url($host);
-        $hostname = $parsedUrl['host'];
+
+        if (!array_key_exists('scheme', $parsedUrl)) {
+            throw new \RuntimeException('A scheme must be specified for ornicar_apc.host.');
+        }
 
         if (array_key_exists('port', $parsedUrl)) {
-            $url = sprintf('%s:%s/%s', $hostname, $parsedUrl['port'], $filename);
+            $url = sprintf('%s://%s:%s/%s', $parsedUrl['scheme'], $parsedUrl['host'], $parsedUrl['port'], $filename);
         } else {
-            $url = sprintf('%s/%s', $hostname, $filename);
+            $url = sprintf('%s://%s/%s', $parsedUrl['scheme'], $parsedUrl['host'], $filename);
         }
 
         $ch = curl_init();
@@ -88,7 +91,7 @@ class ApcClearCommand extends ContainerAwareCommand
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FAILONERROR => true,
-            CURLOPT_HTTPHEADER => array('Host: ' . $hostname),
+            CURLOPT_HTTPHEADER => array('Host: ' . $parsedUrl['host']),
             CURLOPT_SSL_VERIFYHOST => 0,
         );
 
